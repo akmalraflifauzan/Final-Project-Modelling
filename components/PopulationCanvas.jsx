@@ -2,11 +2,11 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 
-const COLORS = {
-  S: '#3B8BD4',
-  I: '#E24B4A',
-  R: '#639922',
-  D: '#888780',
+const EMOJIS = {
+  S: '🤧',
+  I: '🤢',
+  R: '☺️',
+  D: '💀',
 };
 const MAX_DOTS = 400;
 
@@ -71,10 +71,10 @@ export default function PopulationCanvas({ state }) {
         dot.x = Math.max(0, Math.min(1, dot.x));
         dot.y = Math.max(0, Math.min(1, dot.y));
 
-        ctx.beginPath();
-        ctx.arc(dot.x * w, dot.y * h, 4, 0, Math.PI * 2);
-        ctx.fillStyle = COLORS[dot.status];
-        ctx.fill();
+        ctx.font = '14px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(EMOJIS[dot.status], dot.x * w, dot.y * h);
       }
 
       rafRef.current = requestAnimationFrame(render);
