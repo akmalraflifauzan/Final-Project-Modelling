@@ -2,12 +2,7 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 
-const EMOJIS = {
-  S: '🤧',
-  I: '🤢',
-  R: '☺️',
-  D: '💀',
-};
+const EMOJIS = { S: '🤧', I: '🤢', R: '☺️', D: '💀' };
 const MAX_DOTS = 400;
 
 function initDots(count) {
@@ -20,19 +15,19 @@ function initDots(count) {
   }));
 }
 
-export default function PopulationCanvas({ state }) {
+export default function PopulationCanvas({ state, params }) {
   const canvasRef = useRef(null);
   const dotsRef = useRef(initDots(MAX_DOTS));
   const rafRef = useRef(null);
   const stateRef = useRef(state);
+  const paramsRef = useRef(params);
 
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  useEffect(() => { stateRef.current = state; }, [state]);
+  useEffect(() => { paramsRef.current = params; }, [params]);
 
-  const syncDots = useCallback((N) => {
+  const syncDots = useCallback(() => {
     const { S, I, R, D } = stateRef.current;
-    const total = S + I + R + D || N;
+    const total = S + I + R + D || 1;
     const dots = dotsRef.current;
     const n = dots.length;
 
@@ -56,11 +51,15 @@ export default function PopulationCanvas({ state }) {
       const w = canvas.width;
       const h = canvas.height;
 
-      syncDots(stateRef.current.S + stateRef.current.I + stateRef.current.R + stateRef.current.D);
+      syncDots();
 
       ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = '#f9fafb';
       ctx.fillRect(0, 0, w, h);
+
+      ctx.font = '14px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
 
       const dots = dotsRef.current;
       for (const dot of dots) {
@@ -70,10 +69,6 @@ export default function PopulationCanvas({ state }) {
         if (dot.y < 0 || dot.y > 1) dot.vy *= -1;
         dot.x = Math.max(0, Math.min(1, dot.x));
         dot.y = Math.max(0, Math.min(1, dot.y));
-
-        ctx.font = '14px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
         ctx.fillText(EMOJIS[dot.status], dot.x * w, dot.y * h);
       }
 

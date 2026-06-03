@@ -9,59 +9,72 @@ import {
   stochasticStep,
 } from '@/lib/simulation';
 
-const STEPS_PER_FRAME = 3;
+const STEPS_PER_FRAME = 1;
 const MAX_DAY = 365;
+
+const SPEED_DELAY = { 1: 120, 2: 60, 3: 20, 4: 5, 5: 0 };
 
 export function useSimulation() {
   const [params, setParams] = useState(DEFAULT_PARAMS);
   const [playState, setPlayState] = useState('idle');
   const [state, setState] = useState(() => initState(DEFAULT_PARAMS));
   const [history, setHistory] = useState(() => initHistory(initState(DEFAULT_PARAMS)));
+  const [speed, setSpeed] = useState(3);
 
   const stateRef = useRef(initState(DEFAULT_PARAMS));
   const historyRef = useRef(initHistory(initState(DEFAULT_PARAMS)));
   const paramsRef = useRef(DEFAULT_PARAMS);
   const playStateRef = useRef('idle');
+  const speedRef = useRef(3);
   const rafRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   const syncState = useCallback(() => {
     setState({ ...stateRef.current });
     setHistory({ ...historyRef.current });
   }, []);
 
-  const loop = useCallback(() => {
+  const step = useCallback(() => {
     if (playStateRef.current !== 'playing') return;
 
-    for (let i = 0; i < STEPS_PER_FRAME; i++) {
-      if (stateRef.current.day >= MAX_DAY || stateRef.current.I === 0) {
-        playStateRef.current = 'done';
-        setPlayState('done');
-        syncState();
-        return;
-      }
-      const next = stochasticStep(stateRef.current, paramsRef.current);
-      historyRef.current = appendHistory(historyRef.current, next);
-      stateRef.current = next;
+    if (stateRef.current.day >= MAX_DAY || stateRef.current.I === 0) {
+      playStateRef.current = 'done';
+      setPlayState('done');
+      syncState();
+      return;
     }
 
+    const next = stochasticStep(stateRef.current, paramsRef.current);
+    historyRef.current = appendHistory(historyRef.current, next);
+    stateRef.current = next;
     syncState();
-    rafRef.current = requestAnimationFrame(loop);
+
+    const delay = SPEED_DELAY[speedRef.current] ?? 20;
+    if (delay === 0) {
+      rafRef.current = requestAnimationFrame(step);
+    } else {
+      timeoutRef.current = setTimeout(() => {
+        rafRef.current = requestAnimationFrame(step);
+      }, delay);
+    }
   }, [syncState]);
 
   const play = useCallback(() => {
     if (playStateRef.current === 'done') return;
     playStateRef.current = 'playing';
     setPlayState('playing');
-    rafRef.current = requestAnimationFrame(loop);
-  }, [loop]);
+    rafRef.current = requestAnimationFrame(step);
+  }, [step]);
 
   const pause = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     playStateRef.current = 'paused';
     setPlayState('paused');
   }, []);
 
   const reset = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     const newState = initState(paramsRef.current);
     const newHistory = initHistory(newState);
@@ -87,5 +100,10 @@ export function useSimulation() {
     }
   }, []);
 
-  return { params, playState, state, history, play, pause, reset, updateParams };
+  const updateSpeed = useCallback((val) => {
+    speedRef.current = val;
+    setSpeed(val);
+  }, []);
+
+  return { params, playState, state, history, speed, play, pause, reset, updateParams, updateSpeed };
 }
