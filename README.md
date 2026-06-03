@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# Simulasi Penyebaran HIV — Model SIRD Stokastik
 
-## Getting Started
+Aplikasi simulasi interaktif berbasis web untuk memodelkan penyebaran HIV menggunakan model SIRD (Susceptible-Infected-Recovered-Deceased) stokastik dengan efek terapi antiretroviral (ART).
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Model SIRD
+
+### Persamaan Diferensial
+
+```
+dS/dt = -betaeff * S * I / N
+dI/dt = betaeff * S * I / N - gammaeff * I - delta * I
+dR/dt = gammaeff * I
+dD/dt = delta * I
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Efek ART (Antiretroviral Therapy)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+betaeff  = beta  * (1 - cakupan_ART * 0.7)
+gammaeff = gamma * (1 + cakupan_ART * 2.5)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Bilangan Reproduksi Dasar
 
-## Learn More
+```
+R0 = betaeff / (gammaeff + delta)
+```
 
-To learn more about Next.js, take a look at the following resources:
+- Jika R0 < 1 -> wabah terkendali, penyakit akan hilang secara alami
+- Jika R0 > 1 -> wabah menyebar, intervensi diperlukan
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Proses Stokastik (Aproksimasi Gillespie)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Setiap langkah waktu menggunakan aproksimasi Gaussian dari proses Gillespie:
 
-## Deploy on Vercel
+```
+deltaX ~ round(rate + sqrt(rate) * Z),  Z ~ N(0,1)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Instalasi & Menjalankan
+
+```bash
+npm install
+npm run dev
+```
+
+Buka http://localhost:3000 di browser.
+
+### Build Produksi
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## Struktur Proyek
+
+```
+hiv-simulation/
+├── app/
+│   ├── layout.jsx            # Root layout
+│   ├── page.jsx              # Halaman utama + tab navigation
+│   └── globals.css           # Global styles
+├── components/
+│   ├── ControlSlider.jsx     # Slider parameter interaktif
+│   ├── LineChart.jsx         # Grafik garis S/I/R/D (Chart.js)
+│   ├── MetricCard.jsx        # Kartu metrik per kompartemen
+│   ├── PopulationCanvas.jsx  # Visualisasi partikel populasi
+│   └── SensitivityPanel.jsx  # Panel analisis sensitivitas R0
+├── hooks/
+│   └── useSimulation.js      # State management + rAF animation loop
+└── lib/
+    └── simulation.js         # Engine simulasi SIRD stokastik
+```
+
+---
+
+## Fitur Utama
+
+- **Tab Simulasi**: Kontrol 6 parameter, grafik dinamis real-time, kartu metrik, dan kotak wawasan
+- **Tab Populasi**: Visualisasi 400 titik bergerak yang mewakili individu secara proporsional
+- **Tab Sensitivitas**: Banner R0 dengan penjelasan, grafik batang parameter, dan ringkasan puncak infeksi
+
+---
+
+## Referensi
+
+1. Anderson, R.M. & May, R.M. (1991). Infectious Diseases of Humans: Dynamics and Control. Oxford University Press.
+2. Gillespie, D.T. (1977). Exact stochastic simulation of coupled chemical reactions. Journal of Physical Chemistry, 81(25), 2340-2361.
+3. UNAIDS (2023). Global HIV & AIDS statistics — Fact sheet. https://www.unaids.org/en/resources/fact-sheet
+
+---
+
+## Anggota Kelompok
+
+Mata Kuliah: Pemodelan Stokastik — Universitas Gadjah Mada
+
+| No | Nama             | NIM   |
+|----|------------------|-------|
+| 1  | [Nama Anggota 1] | [NIM] |
+| 2  | [Nama Anggota 2] | [NIM] |
+| 3  | [Nama Anggota 3] | [NIM] |
