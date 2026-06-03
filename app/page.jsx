@@ -223,7 +223,12 @@ export default function Home() {
             <div className="flex flex-wrap gap-4 justify-center">
               {Object.entries(COLORS).map(([key, color]) => (
                 <div key={key} className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full inline-block" style={{ backgroundColor: color }} />
+                  <span className="text-xl">
+                    {key === 'S' && '🤧'}
+                    {key === 'I' && '🤢'}
+                    {key === 'R' && '☺️'}
+                    {key === 'D' && '💀'}
+                  </span>
                   <span className="text-sm text-gray-700 dark:text-gray-300">
                     {key === 'S' && 'Rentan (S)'}
                     {key === 'I' && 'Terinfeksi (I)'}
