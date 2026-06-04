@@ -2,18 +2,20 @@
 
 import { useState } from 'react';
 import { useSimulation } from '@/hooks/useSimulation';
-import { computeR0, getPhase } from '@/lib/simulation';
+import { computeR0, getPhase, PRESETS } from '@/lib/simulation';
 import ControlSlider from '@/components/ControlSlider';
 import MetricCard from '@/components/MetricCard';
 import LineChart from '@/components/LineChart';
 import PopulationCanvas from '@/components/PopulationCanvas';
 import SensitivityPanel from '@/components/SensitivityPanel';
+import MultiRunChart from '@/components/MultiRunChart';
 
 const COLORS = { S: '#3B8BD4', I: '#E24B4A', R: '#639922', D: '#888780' };
 
 const TABS = [
   { id: 'simulasi', label: 'Simulasi' },
   { id: 'populasi', label: 'Populasi' },
+  { id: 'multirun', label: 'Multi-Run' },
   { id: 'sensitivitas', label: 'Sensitivitas' },
 ];
 
@@ -74,6 +76,20 @@ export default function Home() {
 
         {/* Tab: Simulasi */}
         <div style={{ display: activeTab === 'simulasi' ? 'flex' : 'none' }} className="flex-col gap-4">
+          {/* Preset Buttons */}
+          <div className="flex gap-2 flex-wrap">
+            {Object.entries(PRESETS).map(([key, preset]) => (
+              <button
+                key={key}
+                onClick={() => { Object.entries(preset.values).forEach(([k, v]) => updateParams(k, v)); reset(); }}
+                className="flex-1 py-1.5 px-3 text-xs font-semibold bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors"
+                title={preset.desc}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+
           {/* Sliders */}
           <div className="grid grid-cols-2 gap-3">
             <ControlSlider
@@ -267,6 +283,18 @@ export default function Home() {
             Tekan Mulai di tab Simulasi untuk melihat penyebaran secara langsung.
           </p>
         </div>
+
+        {/* Tab: Multi-Run */}
+        {activeTab === 'multirun' && (
+          <div className="flex flex-col gap-4">
+            <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                Jalankan 10 simulasi independen dengan parameter yang sama untuk melihat variasi stokastik. Setiap run menghasilkan hasil berbeda karena sifat acak model Gillespie.
+              </p>
+            </div>
+            <MultiRunChart params={params} />
+          </div>
+        )}
 
         {/* Tab: Sensitivitas */}
         {activeTab === 'sensitivitas' && (
