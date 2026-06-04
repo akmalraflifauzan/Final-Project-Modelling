@@ -91,11 +91,11 @@ export default function LineChart({ history }) {
         },
         scales: {
           x: {
-            title: { display: true, text: 'Hari' },
+            title: { display: true, text: 'Day' },
             ticks: { maxTicksLimit: 10 },
           },
           y: {
-            title: { display: true, text: 'Jumlah Individu' },
+            title: { display: true, text: 'Individuals' },
             beginAtZero: true,
           },
         },

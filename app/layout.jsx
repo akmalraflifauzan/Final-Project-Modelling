@@ -1,13 +1,13 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Simulasi HIV — Model SIRD Stokastik',
-  description: 'Simulasi interaktif penyebaran HIV menggunakan model SIRD stokastik dengan efek ART.',
+  title: 'HIV Spread Simulation — Stochastic SIRD Model',
+  description: 'Interactive HIV spread simulation using a stochastic SIRD model with ART and prevention effects.',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id">
+    <html lang="en">
       <body className="antialiased">{children}</body>
     </html>
   );

@@ -13,9 +13,9 @@ export default function MetricCard({ label, value, color, total }) {
         </span>
       </div>
       <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-        {Math.round(value).toLocaleString('id-ID')}
+        {Math.round(value).toLocaleString('en-US')}
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-400">{pct}% dari populasi</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400">{pct}% of population</p>
     </div>
   );
 }

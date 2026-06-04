@@ -9,7 +9,6 @@ import {
   stochasticStep,
 } from '@/lib/simulation';
 
-const STEPS_PER_FRAME = 1;
 const MAX_DAY = 365;
 
 const SPEED_DELAY = { 1: 120, 2: 60, 3: 20, 4: 5, 5: 0 };
@@ -100,10 +99,25 @@ export function useSimulation() {
     }
   }, []);
 
+  const applyPreset = useCallback((presetValues) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    paramsRef.current = presetValues;
+    setParams(presetValues);
+    const newState = initState(presetValues);
+    const newHistory = initHistory(newState);
+    stateRef.current = newState;
+    historyRef.current = newHistory;
+    playStateRef.current = 'idle';
+    setPlayState('idle');
+    setState(newState);
+    setHistory(newHistory);
+  }, []);
+
   const updateSpeed = useCallback((val) => {
     speedRef.current = val;
     setSpeed(val);
   }, []);
 
-  return { params, playState, state, history, speed, play, pause, reset, updateParams, updateSpeed };
+  return { params, playState, state, history, speed, play, pause, reset, updateParams, applyPreset, updateSpeed };
 }

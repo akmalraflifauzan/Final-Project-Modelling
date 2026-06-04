@@ -4,6 +4,7 @@ import { useRef, useEffect, useCallback } from 'react';
 
 const EMOJIS = { S: '🤧', I: '🤢', R: '☺️', D: '💀' };
 const MAX_DOTS = 400;
+const FLASH_DURATION = 12;
 
 function initDots(count) {
   return Array.from({ length: count }, () => ({
@@ -12,6 +13,7 @@ function initDots(count) {
     vx: (Math.random() - 0.5) * 0.008,
     vy: (Math.random() - 0.5) * 0.008,
     status: 'S',
+    flash: 0,
   }));
 }
 
@@ -36,9 +38,18 @@ export default function PopulationCanvas({ state, params }) {
     const rCount = Math.round((R / total) * n);
 
     let idx = 0;
-    for (let i = 0; i < sCount && idx < n; i++, idx++) dots[idx].status = 'S';
-    for (let i = 0; i < iCount && idx < n; i++, idx++) dots[idx].status = 'I';
-    for (let i = 0; i < rCount && idx < n; i++, idx++) dots[idx].status = 'R';
+    for (let i = 0; i < sCount && idx < n; i++, idx++) {
+      dots[idx].status = 'S';
+    }
+    for (let i = 0; i < iCount && idx < n; i++, idx++) {
+      if (dots[idx].status !== 'I') {
+        dots[idx].flash = FLASH_DURATION;
+      }
+      dots[idx].status = 'I';
+    }
+    for (let i = 0; i < rCount && idx < n; i++, idx++) {
+      dots[idx].status = 'R';
+    }
     while (idx < n) { dots[idx].status = 'D'; idx++; }
   }, []);
 
@@ -53,8 +64,9 @@ export default function PopulationCanvas({ state, params }) {
 
       syncDots();
 
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = '#f9fafb';
+      ctx.fillStyle = isDark ? '#0a0a0a' : '#f9fafb';
       ctx.fillRect(0, 0, w, h);
 
       ctx.font = '14px serif';
@@ -69,7 +81,20 @@ export default function PopulationCanvas({ state, params }) {
         if (dot.y < 0 || dot.y > 1) dot.vy *= -1;
         dot.x = Math.max(0, Math.min(1, dot.x));
         dot.y = Math.max(0, Math.min(1, dot.y));
-        ctx.fillText(EMOJIS[dot.status], dot.x * w, dot.y * h);
+
+        const px = dot.x * w;
+        const py = dot.y * h;
+
+        if (dot.flash > 0) {
+          const alpha = dot.flash / FLASH_DURATION * 0.5;
+          ctx.beginPath();
+          ctx.arc(px, py, 12, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(226, 75, 74, ${alpha})`;
+          ctx.fill();
+          dot.flash--;
+        }
+
+        ctx.fillText(EMOJIS[dot.status], px, py);
       }
 
       rafRef.current = requestAnimationFrame(render);
