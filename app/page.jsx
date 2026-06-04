@@ -144,6 +144,24 @@ export default function Home() {
               format={(v) => `${(v * 100).toFixed(0)}%`}
               onChange={(v) => updateParams('artCoverage', v)}
             />
+            <ControlSlider
+              label="Protection Rate (condom/PrEP)"
+              min={0}
+              max={1}
+              step={0.01}
+              value={params.protectionRate}
+              format={(v) => `${(v * 100).toFixed(0)}%`}
+              onChange={(v) => updateParams('protectionRate', v)}
+            />
+            <ControlSlider
+              label="Testing Rate (routine testing)"
+              min={0}
+              max={1}
+              step={0.01}
+              value={params.testingRate}
+              format={(v) => `${(v * 100).toFixed(0)}%`}
+              onChange={(v) => updateParams('testingRate', v)}
+            />
           </div>
 
           {/* Metric Cards */}
