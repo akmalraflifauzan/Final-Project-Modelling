@@ -1,4 +1,4 @@
-﻿# Simulasi Penyebaran HIV — Model SIRD Stokastik
+﻿# HIV Spread Simulation: A Stochastic SIRD Modeling Approach
 
 Aplikasi simulasi interaktif berbasis web untuk memodelkan penyebaran HIV menggunakan model SIRD (Susceptible-Infected-Recovered-Deceased) stokastik dengan efek terapi antiretroviral (ART).
 
@@ -101,8 +101,8 @@ hiv-simulation/
 
 Mata Kuliah: Pemodelan Stokastik — Universitas Gadjah Mada
 
-| No | Nama             | NIM   |
-|----|------------------|-------|
-| 1  | [Nama Anggota 1] | [NIM] |
-| 2  | [Nama Anggota 2] | [NIM] |
-| 3  | [Nama Anggota 3] | [NIM] |
+| No | Nama | NIM | Keterangan |
+|----|------|-----|------------|
+| 1  | Akhnaf Fawzan Yogatrisna | 24/536720/TK/59561 | Ketua |
+| 2  | Akmal Rafli Fauzan | 24/533033/TK/59053 | Anggota |
+| 3  | Altaf Parves Shua Ilham | 24/536741/TK/59565 | Anggota |
