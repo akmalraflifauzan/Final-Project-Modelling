@@ -6,7 +6,7 @@ const BAR_PARAMS = [
   { key: 'beta', label: 'Beta (β)', max: 1.0 },
   { key: 'gamma', label: 'Gamma (γ)', max: 0.5 },
   { key: 'delta', label: 'Delta (δ)', max: 0.1 },
-  { key: 'artCoverage', label: 'Cakupan ART', max: 1.0 },
+  { key: 'artCoverage', label: 'ART Coverage', max: 1.0 },
 ];
 
 function HBar({ label, value, max, color }) {
@@ -46,7 +46,7 @@ export default function SensitivityPanel({ params, history }) {
       >
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-            Bilangan Reproduksi Dasar (R₀)
+            Basic Reproduction Number (R₀)
           </span>
           <span
             className={`text-2xl font-bold ${isControlled ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}
@@ -56,15 +56,15 @@ export default function SensitivityPanel({ params, history }) {
         </div>
         <p className="text-xs mt-1 text-gray-600 dark:text-gray-300">
           {isControlled
-            ? 'Wabah terkendali — setiap individu terinfeksi menularkan ke kurang dari 1 orang. Penyakit akan hilang secara alami.'
-            : 'Wabah menyebar — setiap individu terinfeksi menularkan ke lebih dari 1 orang. Intervensi diperlukan untuk menghentikan penyebaran.'}
+            ? 'Outbreak controlled — each infected individual transmits to less than 1 person. The disease will naturally disappear.'
+            : 'Outbreak spreading — each infected individual transmits to more than 1 person. Intervention is needed to stop transmission.'}
         </p>
       </div>
 
       {/* Bar Charts */}
       <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex flex-col gap-3">
         <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-          Nilai Parameter
+          Parameter Values
         </h3>
         {BAR_PARAMS.map((p, i) => (
           <HBar
@@ -81,21 +81,21 @@ export default function SensitivityPanel({ params, history }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
-            Puncak Infeksi
+            Peak Infections
           </p>
           <p className="text-xl font-bold text-red-600 dark:text-red-400">
-            {Math.round(peakI).toLocaleString('id-ID')}
+            {Math.round(peakI).toLocaleString('en-US')}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">pada hari ke-{peakDay}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">on day {peakDay}</p>
         </div>
         <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
           <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
-            Beta Efektif
+            Effective Beta
           </p>
           <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
             {betaEff.toFixed(4)}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">Gamma efektif: {gammaEff.toFixed(4)}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Effective gamma: {gammaEff.toFixed(4)}</p>
         </div>
       </div>
     </div>

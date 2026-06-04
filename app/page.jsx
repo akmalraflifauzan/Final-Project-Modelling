@@ -13,10 +13,10 @@ import MultiRunChart from '@/components/MultiRunChart';
 const COLORS = { S: '#3B8BD4', I: '#E24B4A', R: '#639922', D: '#888780' };
 
 const TABS = [
-  { id: 'simulasi', label: 'Simulasi' },
-  { id: 'populasi', label: 'Populasi' },
+  { id: 'simulasi', label: 'Simulation' },
+  { id: 'populasi', label: 'Population' },
   { id: 'multirun', label: 'Multi-Run' },
-  { id: 'sensitivitas', label: 'Sensitivitas' },
+  { id: 'sensitivitas', label: 'Sensitivity' },
 ];
 
 const PHASE_COLOR = {
@@ -26,7 +26,7 @@ const PHASE_COLOR = {
   stable: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
 };
 
-const SPEED_LABELS = { 1: 'Lambat', 2: 'Pelan', 3: 'Normal', 4: 'Cepat', 5: 'Turbo' };
+const SPEED_LABELS = { 1: 'Slow', 2: 'Steady', 3: 'Normal', 4: 'Fast', 5: 'Turbo' };
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('simulasi');
@@ -39,10 +39,10 @@ export default function Home() {
 
   const artRec =
     params.artCoverage < 0.3
-      ? 'Tingkatkan cakupan ART untuk memperlambat penyebaran.'
+      ? 'Increase ART coverage to slow down transmission.'
       : params.artCoverage < 0.7
-      ? 'Cakupan ART moderat. Pertimbangkan peningkatan lebih lanjut.'
-      : 'Cakupan ART tinggi. Dampak positif terlihat pada parameter efektif.';
+      ? 'Moderate ART coverage. Consider scaling up further.'
+      : 'High ART coverage. Positive impact visible on effective parameters.';
 
   return (
     <main className="bg-gray-50 dark:bg-gray-950 min-h-screen py-8 px-4">
@@ -50,10 +50,10 @@ export default function Home() {
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Simulasi Penyebaran HIV
+            HIV Spread Simulation
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Model SIRD Stokastik dengan Efek ART
+            Stochastic SIRD Model with ART Effect
           </p>
         </div>
 
@@ -74,7 +74,7 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Tab: Simulasi */}
+        {/* Tab: Simulation */}
         <div style={{ display: activeTab === 'simulasi' ? 'flex' : 'none' }} className="flex-col gap-4">
           {/* Preset Buttons */}
           <div className="flex gap-2 flex-wrap">
@@ -93,7 +93,7 @@ export default function Home() {
           {/* Sliders */}
           <div className="grid grid-cols-2 gap-3">
             <ControlSlider
-              label="Beta (β) — Laju Infeksi"
+              label="Beta (β) — Infection Rate"
               min={0.01}
               max={1.0}
               step={0.01}
@@ -102,7 +102,7 @@ export default function Home() {
               onChange={(v) => updateParams('beta', v)}
             />
             <ControlSlider
-              label="Gamma (γ) — Laju Pemulihan"
+              label="Gamma (γ) — Recovery Rate"
               min={0.001}
               max={0.5}
               step={0.001}
@@ -111,7 +111,7 @@ export default function Home() {
               onChange={(v) => updateParams('gamma', v)}
             />
             <ControlSlider
-              label="Delta (δ) — Laju Kematian"
+              label="Delta (δ) — Death Rate"
               min={0.0}
               max={0.1}
               step={0.001}
@@ -120,7 +120,7 @@ export default function Home() {
               onChange={(v) => updateParams('delta', v)}
             />
             <ControlSlider
-              label="Ukuran Populasi (N)"
+              label="Population Size (N)"
               min={100}
               max={5000}
               step={100}
@@ -128,7 +128,7 @@ export default function Home() {
               onChange={(v) => updateParams('N', v)}
             />
             <ControlSlider
-              label="Infeksi Awal (I₀)"
+              label="Initial Infected (I₀)"
               min={1}
               max={100}
               step={1}
@@ -136,7 +136,7 @@ export default function Home() {
               onChange={(v) => updateParams('i0', v)}
             />
             <ControlSlider
-              label="Cakupan ART (%)"
+              label="ART Coverage (%)"
               min={0}
               max={1}
               step={0.01}
@@ -148,10 +148,10 @@ export default function Home() {
 
           {/* Metric Cards */}
           <div className="grid grid-cols-2 gap-3">
-            <MetricCard label="Rentan (S)" value={state.S} color={COLORS.S} total={total} />
-            <MetricCard label="Terinfeksi (I)" value={state.I} color={COLORS.I} total={total} />
-            <MetricCard label="Pulih (R)" value={state.R} color={COLORS.R} total={total} />
-            <MetricCard label="Meninggal (D)" value={state.D} color={COLORS.D} total={total} />
+            <MetricCard label="Susceptible (S)" value={state.S} color={COLORS.S} total={total} />
+            <MetricCard label="Infected (I)" value={state.I} color={COLORS.I} total={total} />
+            <MetricCard label="Recovered (R)" value={state.R} color={COLORS.R} total={total} />
+            <MetricCard label="Deceased (D)" value={state.D} color={COLORS.D} total={total} />
           </div>
 
           {/* Buttons */}
@@ -161,7 +161,7 @@ export default function Home() {
                 onClick={pause}
                 className="flex-1 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition-colors"
               >
-                Jeda
+                Pause
               </button>
             ) : (
               <button
@@ -169,7 +169,7 @@ export default function Home() {
                 disabled={playState === 'done'}
                 className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold rounded-lg transition-colors"
               >
-                {playState === 'idle' ? 'Mulai' : playState === 'paused' ? 'Lanjut' : 'Selesai'}
+                {playState === 'idle' ? 'Start' : playState === 'paused' ? 'Resume' : 'Done'}
               </button>
             )}
             <button
@@ -184,7 +184,7 @@ export default function Home() {
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex flex-col gap-1">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                Kecepatan
+                Speed
               </span>
               <span className="text-sm font-bold text-gray-800 dark:text-gray-100">
                 {speed} — {SPEED_LABELS[speed]}
@@ -200,7 +200,7 @@ export default function Home() {
               className="w-full accent-gray-700 dark:accent-gray-300 h-2 cursor-pointer"
             />
             <div className="flex justify-between text-xs text-gray-400">
-              <span>Lambat</span>
+              <span>Slow</span>
               <span>Turbo</span>
             </div>
           </div>
@@ -208,16 +208,15 @@ export default function Home() {
           {/* Chart */}
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
             <LineChart history={history} />
-            {/* Legend */}
             <div className="flex flex-wrap gap-4 mt-2 justify-center">
               {Object.entries(COLORS).map(([key, color]) => (
                 <div key={key} className="flex items-center gap-1">
                   <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: color }} />
                   <span className="text-xs text-gray-600 dark:text-gray-300">
-                    {key === 'S' && 'Rentan'}
-                    {key === 'I' && 'Terinfeksi'}
-                    {key === 'R' && 'Pulih'}
-                    {key === 'D' && 'Meninggal'}
+                    {key === 'S' && 'Susceptible'}
+                    {key === 'I' && 'Infected'}
+                    {key === 'R' && 'Recovered'}
+                    {key === 'D' && 'Deceased'}
                   </span>
                 </div>
               ))}
@@ -228,10 +227,10 @@ export default function Home() {
           <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 flex flex-col gap-2">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">
-                Wawasan Simulasi
+                Simulation Insights
               </span>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${PHASE_COLOR[phase]}`}>
-                Fase: {phaseLabel}
+                Phase: {phaseLabel}
               </span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-sm">
@@ -242,11 +241,11 @@ export default function Home() {
                 </span>
               </div>
               <div className="text-gray-700 dark:text-gray-300">
-                <span className="font-medium">Hari:</span> {state.day} / 365
+                <span className="font-medium">Day:</span> {state.day} / 365
               </div>
               <div className="text-gray-700 dark:text-gray-300">
-                <span className="font-medium">Puncak Kasus:</span>{' '}
-                {Math.round(peakI).toLocaleString('id-ID')}
+                <span className="font-medium">Peak Cases:</span>{' '}
+                {Math.round(peakI).toLocaleString('en-US')}
               </div>
               <div className="text-gray-700 dark:text-gray-300">
                 <span className="font-medium">ART:</span>{' '}
@@ -257,7 +256,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Tab: Populasi — always mounted, hidden with CSS */}
+        {/* Tab: Population — always mounted, hidden with CSS */}
         <div style={{ display: activeTab === 'populasi' ? 'flex' : 'none' }} className="flex-col gap-4">
           <PopulationCanvas state={state} params={params} />
           <div className="flex flex-wrap gap-4 justify-center">
@@ -270,17 +269,17 @@ export default function Home() {
                   {key === 'D' && '💀'}
                 </span>
                 <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {key === 'S' && 'Rentan (S)'}
-                  {key === 'I' && 'Terinfeksi (I)'}
-                  {key === 'R' && 'Pulih (R)'}
-                  {key === 'D' && 'Meninggal (D)'}
+                  {key === 'S' && 'Susceptible (S)'}
+                  {key === 'I' && 'Infected (I)'}
+                  {key === 'R' && 'Recovered (R)'}
+                  {key === 'D' && 'Deceased (D)'}
                 </span>
               </div>
             ))}
           </div>
           <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-            Menampilkan {Math.min(400, params.N)} emoji yang mewakili populasi secara proporsional.
-            Tekan Mulai di tab Simulasi untuk melihat penyebaran secara langsung.
+            Displaying {Math.min(400, params.N)} emojis proportionally representing the population.
+            Press Start on the Simulation tab to watch the spread in real-time.
           </p>
         </div>
 
@@ -289,14 +288,14 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
               <p className="text-xs text-blue-700 dark:text-blue-300">
-                Jalankan 10 simulasi independen dengan parameter yang sama untuk melihat variasi stokastik. Setiap run menghasilkan hasil berbeda karena sifat acak model Gillespie.
+                Run 10 independent simulations with the same parameters to observe stochastic variance. Each run produces a different outcome due to the probabilistic nature of the Gillespie model.
               </p>
             </div>
             <MultiRunChart params={params} />
           </div>
         )}
 
-        {/* Tab: Sensitivitas */}
+        {/* Tab: Sensitivity */}
         {activeTab === 'sensitivitas' && (
           <SensitivityPanel params={params} history={history} />
         )}
