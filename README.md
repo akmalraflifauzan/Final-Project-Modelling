@@ -1,12 +1,12 @@
 ﻿# HIV Spread Simulation: A Stochastic SIRD Modeling Approach
 
-Aplikasi simulasi interaktif berbasis web untuk memodelkan penyebaran HIV menggunakan model SIRD (Susceptible-Infected-Recovered-Deceased) stokastik dengan efek terapi antiretroviral (ART).
+An interactive web-based simulation application for modeling HIV transmission using a stochastic SIRD (Susceptible-Infected-Recovered-Deceased) compartmental model with the effect of Antiretroviral Therapy (ART).
 
 ---
 
-## Model SIRD
+## SIRD Model
 
-### Persamaan Diferensial
+### Differential Equations
 
 ```
 dS/dt = -betaeff * S * I / N
@@ -15,25 +15,25 @@ dR/dt = gammaeff * I
 dD/dt = delta * I
 ```
 
-### Efek ART (Antiretroviral Therapy)
+### ART (Antiretroviral Therapy) Effect
 
 ```
-betaeff  = beta  * (1 - cakupan_ART * 0.7)
-gammaeff = gamma * (1 + cakupan_ART * 2.5)
+betaeff  = beta  * (1 - art_coverage * 0.7)
+gammaeff = gamma * (1 + art_coverage * 2.5)
 ```
 
-### Bilangan Reproduksi Dasar
+### Basic Reproduction Number
 
 ```
 R0 = betaeff / (gammaeff + delta)
 ```
 
-- Jika R0 < 1 -> wabah terkendali, penyakit akan hilang secara alami
-- Jika R0 > 1 -> wabah menyebar, intervensi diperlukan
+- If R0 < 1 -> outbreak is controlled; the disease will naturally disappear
+- If R0 > 1 -> outbreak is spreading; intervention is required
 
-### Proses Stokastik (Aproksimasi Gillespie)
+### Stochastic Process (Gillespie Approximation)
 
-Setiap langkah waktu menggunakan aproksimasi Gaussian dari proses Gillespie:
+Each time step uses a Gaussian approximation of the Gillespie algorithm:
 
 ```
 deltaX ~ round(rate + sqrt(rate) * Z),  Z ~ N(0,1)
@@ -41,16 +41,16 @@ deltaX ~ round(rate + sqrt(rate) * Z),  Z ~ N(0,1)
 
 ---
 
-## Instalasi & Menjalankan
+## Installation & Running
 
 ```bash
 npm install
 npm run dev
 ```
 
-Buka http://localhost:3000 di browser.
+Open http://localhost:3000 in your browser.
 
-### Build Produksi
+### Production Build
 
 ```bash
 npm run build
@@ -59,50 +59,50 @@ npm start
 
 ---
 
-## Struktur Proyek
+## Project Structure
 
 ```
 hiv-simulation/
 ├── app/
 │   ├── layout.jsx            # Root layout
-│   ├── page.jsx              # Halaman utama + tab navigation
+│   ├── page.jsx              # Main page + tab navigation
 │   └── globals.css           # Global styles
 ├── components/
-│   ├── ControlSlider.jsx     # Slider parameter interaktif
-│   ├── LineChart.jsx         # Grafik garis S/I/R/D (Chart.js)
-│   ├── MetricCard.jsx        # Kartu metrik per kompartemen
-│   ├── PopulationCanvas.jsx  # Visualisasi partikel populasi
-│   └── SensitivityPanel.jsx  # Panel analisis sensitivitas R0
+│   ├── ControlSlider.jsx     # Interactive parameter sliders
+│   ├── LineChart.jsx         # S/I/R/D line chart (Chart.js)
+│   ├── MetricCard.jsx        # Per-compartment metric cards
+│   ├── PopulationCanvas.jsx  # Animated population visualization
+│   └── SensitivityPanel.jsx  # R0 sensitivity analysis panel
 ├── hooks/
 │   └── useSimulation.js      # State management + rAF animation loop
 └── lib/
-    └── simulation.js         # Engine simulasi SIRD stokastik
+    └── simulation.js         # Stochastic SIRD simulation engine
 ```
 
 ---
 
-## Fitur Utama
+## Key Features
 
-- **Tab Simulasi**: Kontrol 6 parameter, grafik dinamis real-time, kartu metrik, dan kotak wawasan
-- **Tab Populasi**: Visualisasi 400 titik bergerak yang mewakili individu secara proporsional
-- **Tab Sensitivitas**: Banner R0 dengan penjelasan, grafik batang parameter, dan ringkasan puncak infeksi
+- **Simulation Tab**: Control 6 parameters (beta, gamma, delta, N, I0, ART coverage), real-time dynamic chart, metric cards, speed control, and insight box
+- **Population Tab**: Real-time animated emoji visualization of 400 individuals proportionally representing each compartment
+- **Sensitivity Tab**: R0 banner with plain-language explanation, parameter bar charts, and peak infection summary
 
 ---
 
-## Referensi
+## References
 
-1. Anderson, R.M. & May, R.M. (1991). Infectious Diseases of Humans: Dynamics and Control. Oxford University Press.
-2. Gillespie, D.T. (1977). Exact stochastic simulation of coupled chemical reactions. Journal of Physical Chemistry, 81(25), 2340-2361.
+1. Anderson, R.M. & May, R.M. (1991). *Infectious Diseases of Humans: Dynamics and Control*. Oxford University Press.
+2. Gillespie, D.T. (1977). Exact stochastic simulation of coupled chemical reactions. *Journal of Physical Chemistry*, 81(25), 2340-2361.
 3. UNAIDS (2023). Global HIV & AIDS statistics — Fact sheet. https://www.unaids.org/en/resources/fact-sheet
 
 ---
 
-## Anggota Kelompok
+## Group Members
 
-Mata Kuliah: Pemodelan Stokastik — Universitas Gadjah Mada
+Course: Stochastic Modeling — Universitas Gadjah Mada
 
-| No | Nama | NIM | Keterangan |
-|----|------|-----|------------|
-| 1  | Akhnaf Fawzan Yogatrisna | 24/536720/TK/59561 | Ketua |
-| 2  | Akmal Rafli Fauzan | 24/533033/TK/59053 | Anggota |
-| 3  | Altaf Parves Shua Ilham | 24/536741/TK/59565 | Anggota |
+| No | Name | Student ID | Role |
+|----|------|------------|------|
+| 1  | Akhnaf Fawzan Yogatrisna | 24/536720/TK/59561 | Leader |
+| 2  | Akmal Rafli Fauzan | 24/533033/TK/59053 | Member |
+| 3  | Altaf Parves Shua Ilham | 24/536741/TK/59565 | Member |
